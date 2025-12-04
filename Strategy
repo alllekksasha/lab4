@@ -1,0 +1,39 @@
+from abc import ABC, abstractmethod
+
+class SortStrategy(ABC):
+    @abstractmethod
+    def sort(self, data): pass
+
+class BubbleSort(SortStrategy):
+    def sort(self, data):
+        n = len(data)
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if data[j] > data[j+1]:
+                    data[j], data[j+1] = data[j+1], data[j]
+        return data
+
+class QuickSort(SortStrategy):
+    def sort(self, data):
+        if len(data) <= 1: return data
+        pivot = data[len(data)//2]
+        left = [x for x in data if x < pivot]
+        middle = [x for x in data if x == pivot]
+        right = [x for x in data if x > pivot]
+        return QuickSort().sort(left) + middle + QuickSort().sort(right)
+
+class Sorter:
+    def __init__(self, strategy: SortStrategy):
+        self.strategy = strategy
+    
+    def set_strategy(self, strategy: SortStrategy):
+        self.strategy = strategy
+    
+    def sort(self, data):
+        return self.strategy.sort(data[:])  # Копия данных
+
+# Демонстрация
+sorter = Sorter(BubbleSort())
+print(sorter.sort([64, 34, 25, 12, 22, 11, 90]))  # [11, 12, 22, 25, 34, 64, 90]
+sorter.set_strategy(QuickSort())
+print(sorter.sort([64, 34, 25, 12, 22, 11, 90]))
