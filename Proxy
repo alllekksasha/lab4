@@ -1,0 +1,33 @@
+from abc import ABC, abstractmethod
+
+class Image(ABC):
+    @abstractmethod
+    def display(self): pass
+
+class RealImage(Image):
+    def __init__(self, filename):
+        self.filename = filename
+        self.load_from_disk()
+    
+    def load_from_disk(self):
+        print(f"Загрузка {self.filename} с диска...")
+    
+    def display(self):
+        print(f"Отображение {self.filename}")
+
+class ProxyImage(Image):
+    def __init__(self, filename):
+        self.filename = filename
+        self.real_image = None
+    
+    def display(self):
+        if self.real_image is None:
+            self.real_image = RealImage(self.filename)
+        self.real_image.display()
+
+# Демонстрация
+image1 = ProxyImage("photo1.jpg")
+image2 = ProxyImage("photo2.jpg")
+image1.display()  # Загрузка + отображение
+image1.display()  # Только отображение (кэш)
+image2.display()  # Загрузка + отображение
