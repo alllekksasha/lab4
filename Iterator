@@ -1,0 +1,26 @@
+class NumbersRange:
+    def __init__(self, start, stop):
+        self.start = start
+        self.stop = stop
+    
+    def __iter__(self):
+        return NumberIterator(self.start, self.stop)
+
+class NumberIterator:
+    def __init__(self, start, stop):
+        self.current = start
+        self.stop = stop
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.current >= self.stop:
+            raise StopIteration
+        result = self.current
+        self.current += 2
+        return result
+
+# Демонстрация
+for num in NumbersRange(1, 10):
+    print(num)  # 1, 3, 5, 7, 9
