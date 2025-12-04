@@ -1,0 +1,50 @@
+class Request:
+    def __init__(self, amount):
+        self.amount = amount
+
+class Approver(ABC):
+    def __init__(self):
+        self.successor = None
+    
+    def set_successor(self, successor):
+        self.successor = successor
+        return successor
+    
+    @abstractmethod
+    def process_request(self, request): pass
+
+class Manager(Approver):
+    def process_request(self, request):
+        if request.amount <= 1000:
+            print(f"Менеджер одобряет {request.amount}")
+        elif self.successor:
+            self.successor.process_request(request)
+        else:
+            print("Запрос отклонен")
+
+class Director(Approver):
+    def process_request(self, request):
+        if request.amount <= 5000:
+            print(f"Директор одобряет {request.amount}")
+        elif self.successor:
+            self.successor.process_request(request)
+        else:
+            print("Запрос отклонен")
+
+class President(Approver):
+    def process_request(self, request):
+        if request.amount <= 10000:
+            print(f"Президент одобряет {request.amount}")
+        else:
+            print("Запрос отклонен")
+
+# Демонстрация
+manager = Manager()
+director = Director()
+president = President()
+manager.set_successor(director).set_successor(president)
+
+manager.process_request(Request(500))     # Менеджер
+manager.process_request(Request(3000))    # Директор  
+manager.process_request(Request(8000))    # Президент
+manager.process_request(Request(15000))   # Отклонен
